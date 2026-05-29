@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Phishing élevé - fausse banque",
+    "sender": "support-security@fake-bank.tk",
+    "subject": "URGENT votre compte est bloque",
+    "content": "Cliquez immediatement sur http://secure-update-bank.tk pour confirmer votre mot de passe",
+    "has_attachment": false
+  },
+  {
+    "name": "Phishing moyen - facture suspecte",
+    "sender": "billing@unknown-company.xyz",
+    "subject": "Facture jointe a payer rapidement",
+    "content": "Veuillez ouvrir le fichier joint et payer la facture avant ce soir.",
+    "has_attachment": true
+  },
+  {
+    "name": "Risque faible - email normal",
+    "sender": "professeur@universite.ma",
+    "subject": "Rappel de la seance de demain",
+    "content": "Bonjour, je vous rappelle que la seance aura lieu demain a 10h en salle B204.",
+    "has_attachment": false
+  }
+]

@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rapport - Plateforme distribuée de détection d'e-mails de phishing</title>
+  <style>
+    :root {
+      --primary: #12355b;
+      --secondary: #0b6e69;
+      --accent: #f2b705;
+      --light: #f7f9fc;
+      --dark: #17202a;
+      --muted: #5f6c7b;
+      --border: #d9e2ec;
+      --danger: #b42318;
+      --warning: #b54708;
+      --success: #027a48;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #eef2f7;
+      color: var(--dark);
+      line-height: 1.65;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 30px auto;
+      background: white;
+      box-shadow: 0 10px 35px rgba(15, 23, 42, 0.12);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 55px 60px;
+      position: relative;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      letter-spacing: 0.4px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 38px;
+      line-height: 1.15;
+      margin: 0 0 18px;
+      max-width: 850px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      max-width: 850px;
+      opacity: 0.93;
+      margin: 0;
+    }
+
+    .student-card {
+      margin-top: 35px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 30px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 22px;
+      border-radius: 14px;
+      max-width: 800px;
+    }
+
+    .student-card div strong {
+      display: block;
+      font-size: 13px;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    nav {
+      background: var(--light);
+      padding: 28px 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav h2 {
+      margin-top: 0;
+    }
+
+    nav ol {
+      columns: 2;
+      margin-bottom: 0;
+      padding-left: 22px;
+    }
+
+    main {
+      padding: 42px 60px 60px;
+    }
+
+    section {
+      margin-bottom: 46px;
+      padding-bottom: 34px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    h2 {
+      color: var(--primary);
+      font-size: 26px;
+      margin: 0 0 18px;
+      padding-left: 14px;
+      border-left: 5px solid var(--accent);
+    }
+
+    h3 {
+      color: var(--secondary);
+      margin-top: 28px;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    p {
+      margin: 10px 0 14px;
+    }
+
+    .lead {
+      font-size: 17px;
+      color: #263748;
+      background: #f8fafc;
+      border-left: 4px solid var(--secondary);
+      padding: 16px 18px;
+      border-radius: 10px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: #fbfdff;
+      padding: 18px;
+      border-radius: 14px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-yellow { background: #fef3c7; color: #92400e; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 15px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      text-align: left;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 18px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .architecture {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      font-weight: bold;
+    }
+
+    .box {
+      min-width: 260px;
+      text-align: center;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: white;
+      border: 2px solid var(--secondary);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .arrow {
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .box.client { border-color: #2563eb; }
+    .box.gateway { border-color: #0b6e69; background: #ecfeff; }
+    .box.auth { border-color: #7c3aed; }
+    .box.analysis { border-color: #b54708; }
+    .box.audit { border-color: #b42318; }
+    .box.db { border-color: #166534; }
+
+    .note {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #7c2d12;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 18px 0;
+    }
+
+    .success-box {
+      background: #ecfdf3;
+      border: 1px solid #abefc6;
+      color: #064e3b;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 18px 0;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 28px 60px 40px;
+      background: #f8fafc;
+    }
+
+    @media (max-width: 760px) {
+      .page { margin: 0; border-radius: 0; }
+      header, nav, main, .footer { padding-left: 24px; padding-right: 24px; }
+      h1 { font-size: 29px; }
+      .student-card, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      nav ol { columns: 1; }
+    }
+
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; margin: 0; max-width: none; border-radius: 0; }
+      header { border-radius: 0; }
+      section { page-break-inside: avoid; }
+      pre { white-space: pre-wrap; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="tag">Projet de fin de semestre - Cloud Computing / Applications réparties et cybersécurité</div>
+      <h1>Plateforme distribuée de détection et qualification d’e-mails de phishing</h1>
+      <p class="subtitle">
+        Rapport technique détaillé d’une mini-application distribuée développée en Python, permettant l’authentification des utilisateurs, la soumission d’e-mails suspects, l’analyse du risque de phishing, la consultation de l’historique et la traçabilité des actions sensibles.
+      </p>
+
+      <div class="student-card">
+        <div><strong>Réalisé par</strong>Mohamed Nizar Zouizra</div>
+        <div><strong>Niveau</strong>1ère année Cybersécurité</div>
+        <div><strong>Établissement</strong>Université Euromed</div>
+        <div><strong>Année universitaire</strong>2025 / 2026</div>
+        <div><strong>Technologies</strong>Python, Flask, Pyro5, SQLite, JSON</div>
+        <div><strong>Type de projet</strong>Application distribuée locale</div>
+      </div>
+    </header>
+
+    <nav>
+      <h2>Table des matières</h2>
+      <ol>
+        <li>Introduction</li>
+        <li>Objectifs du projet</li>
+        <li>Architecture générale</li>
+        <li>Description des services</li>
+        <li>Données gérées</li>
+        <li>Fonctionnement de l’analyse phishing</li>
+        <li>Authentification et autorisation</li>
+        <li>Communication distribuée</li>
+        <li>Sécurité et bonnes pratiques</li>
+        <li>Gestion des erreurs et résilience</li>
+        <li>Base de données et journalisation</li>
+        <li>Tests et scénario de démonstration</li>
+        <li>Tableau des menaces et contre-mesures</li>
+        <li>Limites et améliorations possibles</li>
+        <li>Conclusion</li>
+      </ol>
+    </nav>
+
+    <main>
+      <section>
+        <h2>1. Introduction</h2>
+        <p class="lead">
+          Le phishing est l’une des attaques les plus fréquentes dans le domaine de la cybersécurité. Il consiste à tromper un utilisateur afin de lui faire cliquer sur un faux lien, fournir un mot de passe, ouvrir une pièce jointe malveillante ou croire à une fausse identité. Dans le cadre de ce projet, l’objectif n’est pas de construire un antivirus complet, mais de réaliser une application pédagogique, distribuée, sécurisée et démontrable localement.
+        </p>
+        <p>
+          La plateforme développée permet de centraliser des signalements d’e-mails suspects, de les analyser automatiquement grâce à un moteur heuristique simple, puis d’attribuer un niveau de risque : <strong>faible</strong>, <strong>moyen</strong> ou <strong>élevé</strong>. Le projet met également en avant des notions importantes des applications réparties : communication entre services, API, appels distants, sérialisation, gestion d’erreurs, journalisation et sécurité by design.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Objectifs du projet</h2>
+        <p>
+          L’objectif général est de concevoir une mini plateforme distribuée en Python capable de traiter des signalements d’e-mails suspects. Le système doit être simple, compréhensible, sécurisé et composé de plusieurs services séparés qui communiquent réellement entre eux.
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Objectifs fonctionnels</h3>
+            <ul>
+              <li>Permettre la connexion d’un utilisateur avec login et mot de passe.</li>
+              <li>Générer un token de session simplifié.</li>
+              <li>Soumettre un e-mail suspect via un client console.</li>
+              <li>Analyser le contenu et produire un score de risque.</li>
+              <li>Consulter la liste des signalements.</li>
+              <li>Rechercher par expéditeur, mot-clé ou niveau de risque.</li>
+              <li>Afficher le détail d’un signalement.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Objectifs techniques</h3>
+            <ul>
+              <li>Développer uniquement en Python.</li>
+              <li>Créer plusieurs services indépendants.</li>
+              <li>Utiliser des échanges HTTP/JSON.</li>
+              <li>Utiliser un mécanisme RPC avec Pyro5.</li>
+              <li>Stocker les données dans SQLite.</li>
+              <li>Mettre en place des logs d’audit structurés.</li>
+              <li>Gérer les erreurs de manière propre.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Architecture générale</h2>
+        <p>
+          L’application suit une architecture distribuée composée de plusieurs processus Python lancés séparément. Chaque service possède une responsabilité précise, ce qui permet de mieux organiser le code, de faciliter les tests et de montrer clairement la communication entre composants.
+        </p>
+
+        <div class="architecture">
+          <div class="diagram">
+            <div class="box client">Client console</div>
+            <div class="arrow">↓ HTTP/JSON</div>
+            <div class="box gateway">GatewayService / SubmissionService<br><small>Port 5010</small></div>
+            <div class="arrow">↓ Appels distribués</div>
+            <div class="row">
+              <div class="box auth">AuthService<br><small>Port 5001</small></div>
+              <div class="box analysis">AnalysisService<br><small>RPC Pyro5</small></div>
+              <div class="box audit">AuditService<br><small>Port 5003</small></div>
+            </div>
+            <div class="arrow">↓</div>
+            <div class="box db">SQLite<br><small>reports.db / users.db / audit.log</small></div>
+          </div>
+        </div>
+
+        <p>
+          Le client console ne communique pas directement avec tous les services. Il passe principalement par le <strong>GatewayService</strong>. Ce dernier vérifie l’identité auprès de <strong>AuthService</strong>, appelle <strong>AnalysisService</strong> pour obtenir un score, enregistre les résultats dans SQLite et envoie les événements sensibles vers <strong>AuditService</strong>.
+        </p>
+      </section>
+
+      <section>
+        <h2>4. Description des services</h2>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>AuthService</h3>
+            <p>
+              Ce service gère l’authentification. Il reçoit le login et le mot de passe, vérifie les informations dans la base <code>users.db</code>, puis retourne un token si l’utilisateur est valide.
+            </p>
+            <ul>
+              <li>Route <code>/login</code> : connexion utilisateur.</li>
+              <li>Route <code>/verify-token</code> : vérification du token.</li>
+              <li>Rôles : <code>admin</code>, <code>analyst</code>, <code>user</code>.</li>
+              <li>Mots de passe stockés sous forme hashée.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>GatewayService</h3>
+            <p>
+              C’est le service central de l’application. Il reçoit les requêtes du client, contrôle le token, valide les données, appelle les autres services et stocke les signalements.
+            </p>
+            <ul>
+              <li>Route <code>/submit</code> : soumission d’un e-mail suspect.</li>
+              <li>Route <code>/reports</code> : liste des signalements.</li>
+              <li>Route <code>/reports/&lt;id&gt;</code> : détail d’un signalement.</li>
+              <li>Route <code>/search</code> : recherche par critères.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>AnalysisService</h3>
+            <p>
+              Ce service est appelé à distance via Pyro5. Il applique des règles simples pour détecter des indicateurs de phishing et retourne un score de risque accompagné d’une justification.
+            </p>
+            <ul>
+              <li>Détection de mots urgents.</li>
+              <li>Détection de demandes d’informations sensibles.</li>
+              <li>Détection d’URLs et de domaines suspects.</li>
+              <li>Retour d’un niveau : faible, moyen ou élevé.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>AuditService</h3>
+            <p>
+              Ce service enregistre les événements sensibles dans un fichier de logs structuré. Il permet de garder une trace des connexions, soumissions, erreurs et accès refusés.
+            </p>
+            <ul>
+              <li>Route <code>/audit</code> : enregistrement d’un événement.</li>
+              <li>Route <code>/logs</code> : affichage des derniers logs pour la démonstration.</li>
+              <li>Format JSON ligne par ligne.</li>
+              <li>Masquage des tokens dans les logs.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>5. Données gérées</h2>
+        <p>
+          Chaque signalement contient les informations nécessaires pour identifier l’e-mail suspect, l’utilisateur qui a effectué la soumission, le résultat de l’analyse et la justification du score.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Donnée</th>
+              <th>Description</th>
+              <th>Exemple</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Identifiant</td>
+              <td>Numéro unique du signalement.</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>Expéditeur déclaré</td>
+              <td>Adresse de l’expéditeur affichée dans l’e-mail.</td>
+              <td>support-security@fake-bank.tk</td>
+            </tr>
+            <tr>
+              <td>Objet</td>
+              <td>Sujet de l’e-mail suspect.</td>
+              <td>URGENT votre compte est bloqué</td>
+            </tr>
+            <tr>
+              <td>Contenu</td>
+              <td>Texte principal de l’e-mail.</td>
+              <td>Cliquez immédiatement sur ce lien...</td>
+            </tr>
+            <tr>
+              <td>URLs détectées</td>
+              <td>Liste des liens trouvés dans le message.</td>
+              <td>http://secure-update-bank.tk</td>
+            </tr>
+            <tr>
+              <td>Date de soumission</td>
+              <td>Date et heure de l’enregistrement.</td>
+              <td>2026-05-25T...</td>
+            </tr>
+            <tr>
+              <td>Utilisateur</td>
+              <td>Compte ayant soumis le signalement.</td>
+              <td>admin</td>
+            </tr>
+            <tr>
+              <td>Score</td>
+              <td>Valeur numérique entre 0 et 100.</td>
+              <td>85</td>
+            </tr>
+            <tr>
+              <td>Niveau</td>
+              <td>Risque final lisible.</td>
+              <td>élevé</td>
+            </tr>
+            <tr>
+              <td>Justification</td>
+              <td>Raisons expliquant le score.</td>
+              <td>URL suspecte, mot urgent, demande de mot de passe</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>6. Fonctionnement de l’analyse phishing</h2>
+        <p>
+          Le moteur d’analyse repose sur une logique heuristique. Cela signifie qu’il n’utilise pas un modèle d’intelligence artificielle, mais des règles explicables. Cette approche est adaptée au cadre pédagogique du projet, car elle permet de comprendre pourquoi un e-mail reçoit un certain score.
+        </p>
+
+        <h3>Règles utilisées</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Indicateur détecté</th>
+              <th>Exemples</th>
+              <th>Impact sur le score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mots urgents ou manipulateurs</td>
+              <td>urgent, immédiatement, compte bloqué</td>
+              <td>+20</td>
+            </tr>
+            <tr>
+              <td>Demande d’information sensible</td>
+              <td>mot de passe, carte bancaire, identifiants</td>
+              <td>+30</td>
+            </tr>
+            <tr>
+              <td>Présence d’une URL</td>
+              <td>http://...</td>
+              <td>+15</td>
+            </tr>
+            <tr>
+              <td>Domaine suspect</td>
+              <td>.tk, .ru, .xyz, bit.ly</td>
+              <td>+25</td>
+            </tr>
+            <tr>
+              <td>Pièce jointe annoncée</td>
+              <td>facture jointe, document attaché</td>
+              <td>+10</td>
+            </tr>
+            <tr>
+              <td>Usurpation possible</td>
+              <td>banque, PayPal, Microsoft, Apple</td>
+              <td>+15</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Classification du risque</h3>
+        <div class="grid-3">
+          <div class="card">
+            <span class="badge badge-green">Faible</span>
+            <p>Score de 0 à 30. Peu ou pas d’indicateurs suspects.</p>
+          </div>
+          <div class="card">
+            <span class="badge badge-yellow">Moyen</span>
+            <p>Score de 31 à 60. Plusieurs éléments suspects mais pas forcément critiques.</p>
+          </div>
+          <div class="card">
+            <span class="badge badge-red">Élevé</span>
+            <p>Score supérieur à 60. Le message présente plusieurs signes forts de phishing.</p>
+          </div>
+        </div>
+
+        <h3>Exemple d’analyse</h3>
+        <pre><code>Expéditeur : support-security@fake-bank.tk
+Objet      : URGENT votre compte est bloque
+Contenu    : Cliquez immediatement sur http://secure-update-bank.tk pour confirmer votre mot de passe
+
+Résultat attendu :
+Score  : 100
+Niveau : élevé
+Raisons :
+- Mot urgent détecté
+- Demande de mot de passe
+- URL détectée
+- Domaine suspect</code></pre>
+      </section>
+
+      <section>
+        <h2>7. Authentification et autorisation</h2>
+        <p>
+          L’authentification est assurée par <strong>AuthService</strong>. Lorsqu’un utilisateur se connecte, le service vérifie le mot de passe à partir de son hash. Si la connexion est valide, un token est généré et renvoyé au client.
+        </p>
+
+        <h3>Comptes de test</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Utilisateur</th>
+              <th>Mot de passe</th>
+              <th>Rôle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>admin</td><td>admin123</td><td>admin</td></tr>
+            <tr><td>analyst</td><td>analyst123</td><td>analyst</td></tr>
+            <tr><td>user</td><td>user123</td><td>user</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          Les rôles permettent de contrôler les permissions. Un administrateur ou un analyste peut consulter tous les signalements, tandis qu’un utilisateur simple ne consulte que ses propres signalements.
+        </p>
+
+        <div class="success-box">
+          Les mots de passe ne sont pas stockés en clair. Ils sont protégés par un hash généré avec Werkzeug. Cette mesure réduit le risque en cas d’accès non autorisé à la base des utilisateurs.
+        </div>
+      </section>
+
+      <section>
+        <h2>8. Communication distribuée</h2>
+        <p>
+          La plateforme utilise deux modes de communication : HTTP/JSON pour les services Flask et RPC avec Pyro5 pour le service d’analyse. Cette combinaison permet de montrer plusieurs mécanismes d’applications réparties.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Communication</th>
+              <th>Protocole / outil</th>
+              <th>Rôle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Client → GatewayService</td>
+              <td>HTTP/JSON</td>
+              <td>Soumission et consultation des signalements.</td>
+            </tr>
+            <tr>
+              <td>GatewayService → AuthService</td>
+              <td>HTTP/JSON</td>
+              <td>Vérification du token.</td>
+            </tr>
+            <tr>
+              <td>GatewayService → AnalysisService</td>
+              <td>RPC Pyro5</td>
+              <td>Analyse du contenu et calcul du score.</td>
+            </tr>
+            <tr>
+              <td>GatewayService → AuditService</td>
+              <td>HTTP/JSON</td>
+              <td>Enregistrement des événements sensibles.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          L’utilisation de Pyro5 montre le principe d’un objet distant. Le <strong>GatewayService</strong> ne calcule pas lui-même le score de phishing. Il cherche le service distant <code>phishing.analysis</code> via le NameServer Pyro5, puis appelle la méthode <code>analyze_email()</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Sécurité et bonnes pratiques</h2>
+        <p>
+          Le projet applique plusieurs mesures de sécurité afin d’éviter les erreurs courantes dans une application distribuée. Ces mesures sont simples mais importantes pour montrer une approche de sécurité dès la conception.
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Protection des identifiants</h3>
+            <ul>
+              <li>Les mots de passe sont hashés.</li>
+              <li>Les tokens ne sont pas stockés ni affichés en clair dans les logs.</li>
+              <li>Les messages d’erreur restent génériques.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Validation des entrées</h3>
+            <ul>
+              <li>Les champs obligatoires sont vérifiés.</li>
+              <li>La taille des champs est limitée.</li>
+              <li>Les caractères HTML dangereux comme <code>&lt;</code> et <code>&gt;</code> sont nettoyés.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Contrôle d’accès</h3>
+            <ul>
+              <li>Les routes sensibles nécessitent un token.</li>
+              <li>Les rôles déterminent les droits de consultation.</li>
+              <li>Un accès sans token retourne une erreur <code>Unauthorized</code>.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Sérialisation</h3>
+            <ul>
+              <li>Les échanges HTTP utilisent JSON.</li>
+              <li>Les données reçues sont contrôlées avant traitement.</li>
+              <li>Le service RPC est limité à l’usage interne de la plateforme locale.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>10. Gestion des erreurs et résilience</h2>
+        <p>
+          Dans une architecture distribuée, un service peut être indisponible. Le projet prévoit donc des timeouts et des messages d’erreur non bavards côté client. Par exemple, si <strong>AnalysisService</strong> ou le NameServer Pyro5 n’est pas lancé, <strong>GatewayService</strong> retourne une erreur générique au lieu d’afficher les détails techniques.
+        </p>
+
+        <pre><code>{
+  "error": "Service temporarily unavailable"
+}</code></pre>
+
+        <p>
+          Ce comportement est important, car il évite d’exposer des informations internes au client. Il montre également que l’application ne plante pas brutalement lorsqu’un service distant est indisponible.
+        </p>
+
+        <h3>Exemples d’erreurs gérées</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Situation</th>
+              <th>Réponse attendue</th>
+              <th>Objectif</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Accès sans token</td>
+              <td><code>{"error": "Unauthorized"}</code></td>
+              <td>Refuser les utilisateurs non authentifiés.</td>
+            </tr>
+            <tr>
+              <td>Service d’analyse indisponible</td>
+              <td><code>{"error": "Service temporarily unavailable"}</code></td>
+              <td>Masquer les détails techniques.</td>
+            </tr>
+            <tr>
+              <td>Données invalides</td>
+              <td><code>{"error": "Invalid input"}</code></td>
+              <td>Éviter le traitement de données dangereuses.</td>
+            </tr>
+            <tr>
+              <td>Signalement inexistant</td>
+              <td><code>{"error": "Report not found"}</code></td>
+              <td>Gérer proprement les identifiants inconnus.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>11. Base de données et journalisation</h2>
+        <h3>Stockage SQLite</h3>
+        <p>
+          Le projet utilise SQLite pour rester simple et démontrable localement. Deux bases sont utilisées : <code>users.db</code> pour l’authentification et <code>reports.db</code> pour les signalements. Ce choix permet d’éviter une dépendance à un service cloud ou à un serveur de base de données externe.
+        </p>
+
+        <h3>Journalisation d’audit</h3>
+        <p>
+          Les événements sensibles sont enregistrés dans un fichier <code>audit.log</code>. Chaque ligne est au format JSON, ce qui facilite la lecture, le filtrage et l’exploitation des logs.
+        </p>
+
+        <pre><code>{
+  "timestamp": "2026-05-25T13:20:00",
+  "event_type": "SUBMISSION_CREATED",
+  "username": "admin",
+  "status": "success",
+  "details": {
+    "report_id": 1,
+    "risk_level": "élevé"
+  }
+}</code></pre>
+
+        <p>
+          Les logs permettent de prouver qu’une action a été réalisée, par qui, et avec quel résultat. Ils sont essentiels dans une approche de cybersécurité, car ils permettent l’analyse après incident.
+        </p>
+      </section>
+
+      <section>
+        <h2>12. Tests et scénario de démonstration</h2>
+        <p>
+          La démonstration peut être réalisée localement en ouvrant plusieurs terminaux. Chaque service est lancé séparément afin de montrer clairement le fonctionnement distribué.
+        </p>
+
+        <h3>Lancement des services</h3>
+        <pre><code># Terminal 1 : AuthService
+cd /c/Users/OMEN/Desktop/phishing_distributed_platform
+source .venv/Scripts/activate
+cd auth_service
+python app.py
+
+# Terminal 2 : AuditService
+cd /c/Users/OMEN/Desktop/phishing_distributed_platform
+source .venv/Scripts/activate
+cd audit_service
+python app.py
+
+# Terminal 3 : Pyro5 NameServer
+cd /c/Users/OMEN/Desktop/phishing_distributed_platform
+source .venv/Scripts/activate
+python -m Pyro5.nameserver -n 127.0.0.1 -p 9090
+
+# Terminal 4 : AnalysisService
+cd /c/Users/OMEN/Desktop/phishing_distributed_platform
+source .venv/Scripts/activate
+cd analysis_service
+python analysis_rpc.py
+
+# Terminal 5 : GatewayService
+cd /c/Users/OMEN/Desktop/phishing_distributed_platform
+source .venv/Scripts/activate
+cd gateway_service
+python app.py
+
+# Terminal 6 : Client console
+cd /c/Users/OMEN/Desktop/phishing_distributed_platform
+source .venv/Scripts/activate
+cd client
+python client_console.py</code></pre>
+
+        <h3>Scénario de démonstration</h3>
+        <ol>
+          <li>Lancer tous les services.</li>
+          <li>Ouvrir le client console.</li>
+          <li>Se connecter avec le compte <code>admin / admin123</code>.</li>
+          <li>Soumettre un e-mail suspect.</li>
+          <li>Afficher le score de risque et les raisons.</li>
+          <li>Lister les signalements enregistrés.</li>
+          <li>Consulter le détail d’un signalement.</li>
+          <li>Faire une recherche par niveau de risque.</li>
+          <li>Afficher les logs d’audit.</li>
+          <li>Tester un accès sans token pour montrer le refus.</li>
+        </ol>
+
+        <h3>Test d’accès non autorisé</h3>
+        <pre><code>curl -X GET http://127.0.0.1:5010/reports
+
+Résultat attendu :
+{
+  "error": "Unauthorized"
+}</code></pre>
+
+        <h3>Exemple de soumission</h3>
+        <pre><code>Expéditeur déclaré : support-security@fake-bank.tk
+Objet de l'e-mail   : URGENT votre compte est bloque
+Contenu             : Cliquez immediatement sur http://secure-update-bank.tk pour confirmer votre mot de passe
+Pièce jointe        : non
+
+Résultat attendu :
+Score : 100
+Niveau : élevé</code></pre>
+      </section>
+
+      <section>
+        <h2>13. Tableau des menaces et contre-mesures</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Menace principale</th>
+              <th>Impact possible</th>
+              <th>Contre-mesure mise en place</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Vol de mot de passe</td>
+              <td>Compromission des comptes utilisateurs.</td>
+              <td>Hashage des mots de passe avec Werkzeug.</td>
+            </tr>
+            <tr>
+              <td>Accès non authentifié</td>
+              <td>Consultation ou soumission non autorisée.</td>
+              <td>Vérification obligatoire du token sur les routes sensibles.</td>
+            </tr>
+            <tr>
+              <td>Utilisateur sans permission</td>
+              <td>Accès aux signalements d’autres utilisateurs.</td>
+              <td>Contrôle des rôles admin, analyst et user.</td>
+            </tr>
+            <tr>
+              <td>Exposition du token</td>
+              <td>Réutilisation frauduleuse d’une session.</td>
+              <td>Masquage des tokens dans les logs d’audit.</td>
+            </tr>
+            <tr>
+              <td>Injection ou données malformées</td>
+              <td>Erreurs, corruption ou comportement inattendu.</td>
+              <td>Validation stricte et nettoyage des entrées côté serveur.</td>
+            </tr>
+            <tr>
+              <td>Indisponibilité d’un service</td>
+              <td>Blocage de la soumission ou de l’analyse.</td>
+              <td>Timeouts et gestion propre des exceptions.</td>
+            </tr>
+            <tr>
+              <td>Fuite d’informations techniques</td>
+              <td>Aide indirecte à un attaquant.</td>
+              <td>Messages d’erreur génériques côté client.</td>
+            </tr>
+            <tr>
+              <td>Abus d’appels ou entrées trop longues</td>
+              <td>Surcharge ou consommation excessive de ressources.</td>
+              <td>Limitation de la taille des champs et timeout sur les appels distants.</td>
+            </tr>
+            <tr>
+              <td>Risque de désérialisation</td>
+              <td>Traitement de données non fiables.</td>
+              <td>Utilisation de JSON pour les APIs et contrôle des données avant traitement.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>14. Limites et améliorations possibles</h2>
+        <p>
+          La solution développée est volontairement simple et pédagogique. Elle permet de démontrer les notions importantes du module, mais elle ne remplace pas une solution professionnelle de sécurité e-mail.
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Limites actuelles</h3>
+            <ul>
+              <li>Le moteur d’analyse utilise des règles simples.</li>
+              <li>Il n’analyse pas réellement les pièces jointes.</li>
+              <li>Il ne vérifie pas la réputation réelle des domaines.</li>
+              <li>Il n’intègre pas de modèle d’intelligence artificielle.</li>
+              <li>Le stockage reste local avec SQLite.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Améliorations possibles</h3>
+            <ul>
+              <li>Ajouter un tableau de bord web.</li>
+              <li>Ajouter un système de file d’attente.</li>
+              <li>Mettre en place un rate limiting par utilisateur ou adresse IP.</li>
+              <li>Comparer JSON avec Protobuf.</li>
+              <li>Ajouter une analyse plus avancée des URLs.</li>
+              <li>Créer un circuit breaker simplifié.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>15. Conclusion</h2>
+        <p>
+          Ce projet a permis de concevoir et développer une mini plateforme distribuée de détection et qualification d’e-mails de phishing. L’application est composée de plusieurs services indépendants : AuthService, GatewayService, AnalysisService, AuditService et un client console. Chaque composant possède une responsabilité claire, ce qui rend l’architecture plus lisible et plus proche d’un système distribué réel.
+        </p>
+        <p>
+          Le système permet de se connecter, de soumettre un e-mail suspect, d’obtenir un score de risque, de consulter l’historique des signalements et de tracer les événements importants dans des logs d’audit. Le moteur d’analyse reste simple, mais il est explicable et adapté au contexte pédagogique du projet.
+        </p>
+        <p>
+          Enfin, plusieurs mesures de cybersécurité ont été intégrées : hashage des mots de passe, vérification des tokens, contrôle des rôles, validation des entrées, limitation des tailles, timeouts, erreurs génériques et journalisation structurée. Le projet répond ainsi aux objectifs principaux d’une application distribuée sécurisée, fonctionnelle et démontrable localement.
+        </p>
+
+        <div class="success-box">
+          En résumé, la solution privilégie une architecture simple, claire et fonctionnelle plutôt qu’une plateforme trop complexe. Elle peut être facilement présentée, testée et expliquée pendant la démonstration.
+        </div>
+      </section>
+    </main>
+
+    <div class="footer">
+      Rapport préparé pour le projet de fin de semestre - Plateforme distribuée de détection et qualification d’e-mails de phishing.<br />
+      Réalisé par Mohamed Nizar Zouizra - 1ère année Cybersécurité - Université Euromed.
+    </div>
+  </div>
+</body>
+</html>

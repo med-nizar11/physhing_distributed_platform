@@ -1,0 +1,8 @@
+{"timestamp": "2026-05-28T13:19:50.797910", "event_type": "SUBMISSION_CREATED", "username": "admin", "status": "success", "details": {"report_id": 3, "risk_level": "élevé"}}
+{"timestamp": "2026-05-28T13:26:03.759175", "event_type": "SUBMISSION_CREATED", "username": "admin", "status": "success", "details": {"report_id": 4, "risk_level": "élevé"}}
+{"timestamp": "2026-05-28T13:34:50.977564", "event_type": "SUBMISSION_CREATED", "username": "admin", "status": "success", "details": {"report_id": 5, "risk_level": "élevé"}}
+{"timestamp": "2026-05-28T13:42:03.886802", "event_type": "UNAUTHORIZED_ACCESS", "username": "anonymous", "status": "failed", "details": {"endpoint": "/reports"}}
+{"timestamp": "2026-05-28T13:44:56.599818", "event_type": "ANALYSIS_SERVICE_ERROR", "username": "admin", "status": "failed", "details": {"message": "Analysis service unavailable"}}
+{"timestamp": "2026-05-28T13:47:36.894758", "event_type": "SUBMISSION_CREATED", "username": "admin", "status": "success", "details": {"report_id": 6, "risk_level": "élevé"}}
+{"timestamp": "2026-05-28T18:33:08.437833", "event_type": "SUBMISSION_CREATED", "username": "admin", "status": "success", "details": {"report_id": 7, "risk_level": "élevé"}}
+{"timestamp": "2026-05-29T01:08:35.548969", "event_type": "SUBMISSION_CREATED", "username": "admin", "status": "success", "details": {"report_id": 8, "risk_level": "élevé"}}
